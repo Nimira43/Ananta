@@ -9,4 +9,5 @@ void main()
   vec3 colour = mix(vec3(0.0), vColour, strength);
 
   gl_FragColor = vec4(colour, 1.0);
+  #include <colorspace_fragment>
 }
