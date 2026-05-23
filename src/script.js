@@ -34,6 +34,8 @@ const generateGalaxy = () => {
 
   const positions = new Float32Array(parameters.count * 3)
   const colours = new Float32Array(parameters.count * 3)
+  const scales = new Float32Array(parameters.count * 1)
+
   const insideColour = new THREE.Color(parameters.insideColour)
   const outsideColour = new THREE.Color(parameters.outsideColour)
 
@@ -57,24 +59,28 @@ const generateGalaxy = () => {
     colours[i3] = mixedColour.r
     colours[i3 + 1] = mixedColour.g
     colours[i3 + 2] = mixedColour.b
+
+    scales[i] = Math.random()
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   geometry.setAttribute('color', new THREE.BufferAttribute(colours, 3))
+  geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1))
 
   material = new THREE.ShaderMaterial({
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     vertexColors: true,
     vertexShader: galaxyVertexShader,
-    fragmentShader: galaxyFragmentShader
+    fragmentShader: galaxyFragmentShader,
+    uniforms: {
+      uSize: { value: 30 * renderer.getPixelRatio()}
+    }
   })
 
   points = new THREE.Points(geometry, material)
   scene.add(points)
 }
-
-generateGalaxy()
 
 gui
   .add(parameters, 'count')
@@ -146,6 +152,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+generateGalaxy()
 
 const clock = new THREE.Clock()
 
